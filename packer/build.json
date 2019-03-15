@@ -1,0 +1,38 @@
+{
+  "variables": {
+    "aws_access_key": "",
+    "aws_secret_key": ""
+  },
+
+  "builders": [{
+    "type": "amazon-ebs",
+
+    "communicator": "ssh",
+    "ssh_username": "ec2-user",
+
+    "source_ami_filter": {
+      "filters": {
+        "name": "amzn-ami-hvm-2018.*-x86_64-gp2",
+        "virtualization-type": "hvm",
+        "root-device-type": "ebs"
+      },
+      "owners": ["137112412989"],
+      "most_recent": true
+    },
+
+    "instance_type": "m4.large",
+    "ami_name": "testapp-{{ user `version_number` }}{{isotime \"2006.01.02_1504\"}} (HVM)",
+    "tags": {
+      "Name": "testapp-{{ user `version_number` }}"
+    },
+
+    "region": "ap-southeast-1"
+  }],
+
+  "provisioners": [{
+    "type": "salt-masterless",
+    "local_state_tree": "salt",
+    "local_pillar_roots": "pillar"
+  }]
+
+}
